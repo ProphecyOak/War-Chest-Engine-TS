@@ -7,7 +7,7 @@ export interface ICoinCollection {
   addCoin(coin: ICoin, idx?: number): void;
 }
 
-class CoinCollection implements ICoinCollection {
+export class CoinCollection implements ICoinCollection {
   private coins: ICoin[] = [];
 
   get size(): number {

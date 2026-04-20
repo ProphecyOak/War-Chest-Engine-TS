@@ -5,7 +5,7 @@ export interface ICoin {
 }
 
 export class Coin implements ICoin {
-  _id: string;
+  private _id: string;
   get id(): string {
     return this._id;
   }
