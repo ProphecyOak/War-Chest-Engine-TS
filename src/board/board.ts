@@ -6,7 +6,7 @@ interface IBoard {
 }
 
 export abstract class Board implements IBoard {
-  private _hexes: IHex[][] = [];
+  protected abstract _hexes: (IHex | null)[][];
 
   private get _width(): number {
     if (this._height == 0) return 0;
@@ -27,8 +27,7 @@ export abstract class Board implements IBoard {
     if (!this.in_board(coord)) {
       throw new Error(`Location ${coord} not part of board.`);
     }
-    return this._hexes.at(coord.q)!
-    .at(coord.r)!;
+    return this._hexes.at(coord.q)!.at(coord.r)!;
   }
 
   abstract in_board(coord: ICoordinate): boolean;

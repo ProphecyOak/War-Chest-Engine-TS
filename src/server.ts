@@ -1,4 +1,5 @@
 import Express = require("express");
+import * as boardLayouts from "./board/Layouts";
 
 const app = Express();
 const PORT = 3000;
