@@ -7,6 +7,10 @@ export interface ICoinCollection {
   addCoin(coin: ICoin, idx?: number): void;
 }
 
+//TODO: MAKE THIS INTO UNIT STACKS AND COIN COLLECTIONS
+//  WITH SIMILAR INTERFACE FOR TRANSFERING?
+//  OR MAKE IT SO UNIT STACK HAS SIMILAR INTERFACE TO COIN AND CAN BE PLACED IN COLLECTION?
+
 export class CoinCollection implements ICoinCollection {
   private coins: ICoin[] = [];
 
