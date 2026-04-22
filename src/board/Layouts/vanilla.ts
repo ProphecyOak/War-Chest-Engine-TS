@@ -15,6 +15,9 @@ export default class Vanilla extends Board {
         this._hexes.at(-1)!.push(thisHexInBoard ? new Hex() : null);
       }
     }
+    [new Coordinate(4, 4)].forEach((coord: ICoordinate) =>
+      this.getHex(coord).set("controllable", 1),
+    );
   }
 
   in_board(coord: ICoordinate): boolean {

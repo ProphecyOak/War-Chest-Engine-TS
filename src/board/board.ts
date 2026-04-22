@@ -1,8 +1,9 @@
 import { ICoordinate } from "./coordinate";
 import { IHex } from "./hex";
 
-interface IBoard {
+export interface IBoard {
   getHex(coord: ICoordinate): IHex;
+  in_board(coord: ICoordinate): boolean;
 }
 
 export abstract class Board implements IBoard {

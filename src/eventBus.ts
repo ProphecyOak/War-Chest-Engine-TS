@@ -1,38 +1,46 @@
-type EventHandler<T> = (event: T, payload: any) => void;
+export type EventHandler<T> = (event: T, payload: any) => void;
 
-class Subscription {
-  private eventBus: EventBus<any>;
-  private key: number;
-  constructor(eventBus: EventBus<any>, key: number) {
+export interface ISubscription {
+  unsubscribe(): void;
+}
+
+class Subscription<T> implements ISubscription {
+  private eventBus: EventBus<T>;
+  private key: string;
+  constructor(eventBus: EventBus<T>, key: string) {
     this.eventBus = eventBus;
     this.key = key;
   }
-  unsubscribe() {
+  unsubscribe(): void {
     this.eventBus.unsubscribe(this.key);
   }
 }
 
-class EventBus<T> {
-  private handlers: Map<number, EventHandler<T>> = new Map();
+export interface IEventBus<T> {
+  fire(event: T, payload?: any): void;
+  subscribe(handler: EventHandler<T>): ISubscription;
+  unsubscribe(key: string): void;
+}
+
+export class EventBus<T> implements IEventBus<T> {
+  private handlers: Map<string, EventHandler<T>> = new Map();
   nextKey = 0;
 
-  getKey() {
-    let key = this.nextKey;
-    this.nextKey += 1;
-    return key;
+  generateKey() {
+    return `key_${Date.now()}-${Math.random()}`;
   }
 
   fire(event: T, payload?: any): void {
     this.handlers.forEach((handler) => handler(event, payload));
   }
 
-  subscribe(handler: EventHandler<T>): Subscription {
-    let key = this.getKey();
+  subscribe(handler: EventHandler<T>): ISubscription {
+    let key = this.generateKey();
     this.handlers.set(key, handler);
     return new Subscription(this, key);
   }
 
-  unsubscribe(handlerKey: number): void {
+  unsubscribe(handlerKey: string): void {
     this.handlers.delete(handlerKey);
   }
 }

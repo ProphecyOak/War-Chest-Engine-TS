@@ -1,1 +1,1 @@
-export {default as vanilla} from "./vanilla";
+export { default as Vanilla } from "./vanilla";

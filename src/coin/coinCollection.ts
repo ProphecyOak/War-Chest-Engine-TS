@@ -24,7 +24,7 @@ export class CoinCollection implements ICoinCollection {
       }
       return this.coins[idx]!;
     } else {
-      return this.coins[-1]!;
+      return this.coins.at(-1)!;
     }
   }
 
