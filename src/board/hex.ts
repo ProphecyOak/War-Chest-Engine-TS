@@ -1,14 +1,14 @@
-import { CoinCollection, ICoinCollection } from "../coin/coinCollection";
+import * as CoinCollections from "../coin/collections";
 
 export interface IHex {
-  get coinStack(): ICoinCollection;
+  get coinStack(): CoinCollections.ICoinStack;
   is(flagName: string): number;
   set(flagName: string, value: number): void;
 }
 
 export class Hex implements IHex {
-  private _coinStack: ICoinCollection;
-  get coinStack(): ICoinCollection {
+  private _coinStack: CoinCollections.ICoinStack;
+  get coinStack(): CoinCollections.ICoinStack {
     return this._coinStack;
   }
 
@@ -27,6 +27,6 @@ export class Hex implements IHex {
   }
 
   constructor() {
-    this._coinStack = new CoinCollection();
+    this._coinStack = new CoinCollections.Stack();
   }
 }

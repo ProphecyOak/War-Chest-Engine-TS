@@ -2,7 +2,8 @@ export interface ICoin {
   get id(): string;
   get team(): number;
   get faceup(): boolean;
-  flipTo(to: boolean): void;
+  flipFaceup(): void;
+  flipFacedown(): void;
 }
 
 export class Coin implements ICoin {
@@ -27,7 +28,11 @@ export class Coin implements ICoin {
     this._team = team;
   }
 
-  flipTo(to: boolean): void {
-    this._faceup = to;
+  flipFaceup(): void {
+    this._faceup = true;
+  }
+
+  flipFacedown(): void {
+    this._faceup = false;
   }
 }
