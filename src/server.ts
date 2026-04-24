@@ -15,16 +15,16 @@ let swordsmanLocation = new Coordinate(4, 3);
 myBoard.getHex(swordsmanLocation).coinStack.addCoin(new Coin("swordsman", 1));
 
 let PikemanUnit = new units.Vanilla.Pikeman(0);
-PikemanUnit.board_locations.push(pikemanLocation);
+PikemanUnit.boardLocations.push(pikemanLocation);
 let SwordsmanUnit = new units.Vanilla.Swordsman(1);
-SwordsmanUnit.board_locations.push(swordsmanLocation);
+SwordsmanUnit.boardLocations.push(swordsmanLocation);
 
 PikemanUnit.unitActionsAvailable(myBoard).forEach((x) =>
-  console.log(JSON.stringify(x)),
+  console.log(JSON.stringify(x, undefined, 1)),
 );
 console.log();
 SwordsmanUnit.unitActionsAvailable(myBoard).forEach((x) =>
-  console.log(JSON.stringify(x)),
+  console.log(JSON.stringify(x, undefined, 1)),
 );
 
 app.listen(PORT, () => {

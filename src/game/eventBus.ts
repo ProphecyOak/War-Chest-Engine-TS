@@ -1,4 +1,4 @@
-export type EventHandler<T> = (event: T, payload: any) => void;
+export type EventHandler<T> = (event: T) => void;
 
 export interface ISubscription {
   unsubscribe(): void;
@@ -24,14 +24,14 @@ export interface IEventBus<T> {
 
 export class EventBus<T> implements IEventBus<T> {
   private handlers: Map<string, EventHandler<T>> = new Map();
-  nextKey = 0;
+  protected nextKey = 0;
 
-  generateKey() {
+  protected generateKey() {
     return `key_${Date.now()}-${Math.random()}`;
   }
 
-  fire(event: T, payload?: any): void {
-    this.handlers.forEach((handler) => handler(event, payload));
+  fire(event: T): void {
+    this.handlers.forEach((handler) => handler(event));
   }
 
   subscribe(handler: EventHandler<T>): ISubscription {

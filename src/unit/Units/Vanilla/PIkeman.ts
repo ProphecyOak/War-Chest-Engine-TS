@@ -1,9 +1,17 @@
-import { IBoard } from "../../../board/board";
-import { IAction } from "../../action";
+import { IAction, UnitID } from "../../action";
 import { Unit } from "../../unit";
+import { UnitEventBus } from "../../unitEvents";
 
 export default class Pikeman extends Unit {
-  tacticOptions(board: IBoard): IAction[] {
-    return [];
+  id: UnitID = "vanilla.pikeman";
+  initializeListeners(): void {
+    let unitEvents = UnitEventBus.instance;
+    this.subscriptions.push(unitEvents.subscribe(this.onAttacked));
+    //FIXME filter Pikeman trigger
+  }
+
+  onAttacked(event: IAction): void {
+    //FIXME Pikeman Thorns Trigger
+    console.log("Pikeman deals thorns damage.");
   }
 }

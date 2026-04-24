@@ -5,10 +5,11 @@ type FaceUpAction = "move" | "attack" | "tactic" | "control";
 
 type ActionName = `${string}.${FaceDownAction | FaceUpAction}`;
 
-type UnitID = `${string}.${string}`;
+export type UnitID = `${string}.${string}`;
 
 export interface IAction {
   name: ActionName;
+  actor: UnitID;
 
   damaged: Map<ICoordinate, number>;
   damage(loc: ICoordinate, strength: number): IAction;
@@ -21,17 +22,23 @@ export interface IAction {
 
   recruited: Map<UnitID, number>;
   recruit(unit: UnitID, amount: number): IAction;
+
+  deployed: Map<{ unit: UnitID; amount: number }, ICoordinate>;
+  deploy(unit: UnitID, amount: number, loc: ICoordinate): IAction;
 }
 
 export class Action implements IAction {
   name: ActionName;
+  actor: UnitID;
   damaged: Map<ICoordinate, number> = new Map();
   moved: Map<{ loc: ICoordinate; depth: number }, ICoordinate> = new Map();
   controlled: Map<ICoordinate, number> = new Map();
   recruited: Map<UnitID, number> = new Map();
+  deployed: Map<{ unit: UnitID; amount: number }, ICoordinate> = new Map();
 
-  constructor(name: ActionName) {
+  constructor(name: ActionName, actor: UnitID) {
     this.name = name;
+    this.actor = actor;
   }
 
   damage(loc: ICoordinate, strength: number): IAction {
@@ -58,6 +65,11 @@ export class Action implements IAction {
     return this;
   }
 
+  deploy(unit: UnitID, amount: number, loc: ICoordinate): IAction {
+    this.deployed.set({ unit, amount }, loc);
+    return this;
+  }
+
   toJSON() {
     return {
       name: this.name,
@@ -65,6 +77,7 @@ export class Action implements IAction {
       damaged: Array.from(this.damaged.entries()),
       controlled: Array.from(this.controlled.entries()),
       recruited: Array.from(this.recruited.entries()),
+      deployed: Array.from(this.deployed.entries()),
     };
   }
 }
