@@ -84,7 +84,7 @@ export class Coordinate implements ICoordinate {
     return results;
   }
 
-  toString() {
+  toJSON() {
     return `<${this.q},${this.r}>`;
   }
 }

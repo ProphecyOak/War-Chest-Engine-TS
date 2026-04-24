@@ -1,17 +1,9 @@
 import { IBoard } from "../board/board";
 import { ICoordinate } from "../board/coordinate";
-import { IHex } from "../board/hex";
-
-type FaceDownAction = "pass" | "initiative" | "recruit";
-type FaceUpAction = "move" | "attack" | "tactic" | "control";
-
-interface Action {
-  name: FaceDownAction | FaceUpAction;
-  targets?: ICoordinate[];
-}
+import { Action, IAction } from "./action";
 
 interface IPlayable {
-  unitActionsAvailable(board: IBoard): Action[];
+  unitActionsAvailable(board: IBoard): IAction[];
 }
 
 export abstract class Unit implements IPlayable {
@@ -22,72 +14,66 @@ export abstract class Unit implements IPlayable {
     this.team = team;
   }
 
-  unitActionsAvailable(board: IBoard): Action[] {
-    return ([] as Action[])
+  unitActionsAvailable(board: IBoard): IAction[] {
+    return ([] as IAction[])
       .concat(this.moveOptions(board))
       .concat(this.attackOptions(board))
-      .concat(this.controlOptions(board));
+      .concat(this.controlOptions(board))
+      .concat(this.tacticOptions(board));
   }
 
-  moveOptions(board: IBoard): Action[] {
+  moveOptions(board: IBoard): IAction[] {
     return this.board_locations
-      .map((location: ICoordinate) => {
-        return {
-          name: "move",
-          targets: location
-            .neighbors()
-            .filter((neighbor_coord: ICoordinate) =>
-              board.in_board(neighbor_coord),
-            )
-            .filter(
-              (neighbor_coord: ICoordinate) =>
-                board.getHex(neighbor_coord).coinStack.size == 0,
-            ),
-        } as Action;
-      })
-      .filter((action: Action) => action.targets!.length > 0);
+      .map((location: ICoordinate) =>
+        location
+          .neighbors()
+          .filter((neighbor_coord: ICoordinate) =>
+            board.in_board(neighbor_coord),
+          )
+          .filter(
+            (neighbor_coord: ICoordinate) =>
+              board.getHex(neighbor_coord).coinStack.size == 0,
+          )
+          .map((destination: ICoordinate) =>
+            new Action("vanilla.move").move(location, destination),
+          ),
+      )
+      .flat();
   }
 
-  attackOptions(board: IBoard): Action[] {
+  attackOptions(board: IBoard): IAction[] {
     return this.board_locations
-      .map((location: ICoordinate) => {
-        return {
-          name: "attack",
-          targets: location
-            .neighbors()
-            .filter((neighbor_coord: ICoordinate) =>
-              board.in_board(neighbor_coord),
-            )
-            .filter((neighbor_coord: ICoordinate) => {
-              let hex = board.getHex(neighbor_coord);
-              return (
-                hex.coinStack.size != 0 &&
-                hex.coinStack.getCoin().team != this.team
-              );
-            }),
-        } as Action;
-      })
-      .filter((action: Action) => action.targets!.length > 0);
-  }
-
-  canTactic(board: IBoard): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-  controlOptions(board: IBoard): Action[] {
-    return this.board_locations
-      .map((location: ICoordinate) => {
-        return {
-          name: "control",
-          targets: [location].filter((spot_coord: ICoordinate) => {
-            let hex = board.getHex(spot_coord);
+      .map((location: ICoordinate) =>
+        location
+          .neighbors()
+          .filter((neighbor_coord: ICoordinate) =>
+            board.in_board(neighbor_coord),
+          )
+          .filter((neighbor_coord: ICoordinate) => {
+            let hex = board.getHex(neighbor_coord);
             return (
-              hex.is("controllable") && hex.is("controlledBy") != this.team
+              hex.coinStack.size != 0 &&
+              hex.coinStack.getCoin().team != this.team
             );
-          }),
-        } as Action;
+          })
+          .map((destination: ICoordinate) =>
+            new Action("vanilla.attack").damage(destination, 1),
+          ),
+      )
+      .flat();
+  }
+
+  abstract tacticOptions(board: IBoard): IAction[];
+
+  controlOptions(board: IBoard): IAction[] {
+    return this.board_locations
+      .filter((spot_coord: ICoordinate) => {
+        let hex = board.getHex(spot_coord);
+        return hex.is("controllable") && hex.is("controlledBy") != this.team;
       })
-      .filter((action: Action) => action.targets!.length > 0);
+      .map((destination: ICoordinate) =>
+        new Action("vanilla.control").control(destination, this.team),
+      );
   }
 }
 
