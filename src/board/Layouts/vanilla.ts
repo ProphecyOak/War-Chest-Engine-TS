@@ -11,7 +11,7 @@ export default class Vanilla extends Board {
     for (let q = 0; q < 7; q++) {
       this._hexes.push([]);
       for (let r = 0; r < 7; r++) {
-        let thisHexInBoard = this.in_board(new Coordinate(q, r));
+        let thisHexInBoard = this.inBoard(new Coordinate(q, r));
         this._hexes.at(-1)!.push(thisHexInBoard ? new Hex() : null);
       }
     }
@@ -20,7 +20,7 @@ export default class Vanilla extends Board {
     );
   }
 
-  in_board(coord: ICoordinate): boolean {
+  inBoard(coord: ICoordinate): boolean {
     return (
       coord.q >= 0 &&
       coord.q < 7 &&

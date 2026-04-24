@@ -26,6 +26,8 @@ export class EventBus<T> implements IEventBus<T> {
   private handlers: Map<string, EventHandler<T>> = new Map();
   protected nextKey = 0;
 
+  protected constructor() {}
+
   protected generateKey() {
     return `key_${Date.now()}-${Math.random()}`;
   }

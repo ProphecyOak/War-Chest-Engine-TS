@@ -1,9 +1,11 @@
+import { IAction } from "../unit/action";
 import { ICoordinate } from "./coordinate";
-import { IHex } from "./hex";
+import { HexFlag, IHex } from "./hex";
 
 export interface IBoard {
   getHex(coord: ICoordinate): IHex;
-  in_board(coord: ICoordinate): boolean;
+  inBoard(coord: ICoordinate): boolean;
+  resolveAction(action: IAction): void;
 }
 
 export abstract class Board implements IBoard {
@@ -25,11 +27,19 @@ export abstract class Board implements IBoard {
     if (coord.r < 0 || coord.r >= this._width) {
       throw new Error(`r coordinate ${coord.r} out of board-bounding range.`);
     }
-    if (!this.in_board(coord)) {
+    if (!this.inBoard(coord)) {
       throw new Error(`Location ${coord} not part of board.`);
     }
     return this._hexes.at(coord.q)!.at(coord.r)!;
   }
 
-  abstract in_board(coord: ICoordinate): boolean;
+  abstract inBoard(coord: ICoordinate): boolean;
+
+  resolveAction(action: IAction): void {
+    action.controlled.forEach((team: number, loc: ICoordinate) => {
+      if (this.inBoard(loc)) {
+        this.getHex(loc).set(HexFlag.ControlledBy, team);
+      }
+    });
+  }
 }

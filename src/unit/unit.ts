@@ -1,7 +1,10 @@
 import { IBoard } from "../board/board";
 import { ICoordinate } from "../board/coordinate";
+import { HexFlag } from "../board/hex";
 import { ISubscription } from "../game/eventBus";
-import { Action, IAction, UnitID } from "./action";
+import { Action, IAction } from "./action";
+
+export type UnitID = `${string}.${string}`;
 
 interface IPlayable {
   unitActionsAvailable(board: IBoard): IAction[];
@@ -34,7 +37,7 @@ export abstract class Unit implements IPlayable {
         location
           .neighbors()
           .filter((neighbor_coord: ICoordinate) =>
-            board.in_board(neighbor_coord),
+            board.inBoard(neighbor_coord),
           )
           .filter(
             (neighbor_coord: ICoordinate) =>
@@ -53,7 +56,7 @@ export abstract class Unit implements IPlayable {
         location
           .neighbors()
           .filter((neighbor_coord: ICoordinate) =>
-            board.in_board(neighbor_coord),
+            board.inBoard(neighbor_coord),
           )
           .filter((neighbor_coord: ICoordinate) => {
             let hex = board.getHex(neighbor_coord);
@@ -77,7 +80,10 @@ export abstract class Unit implements IPlayable {
     return this.boardLocations
       .filter((spot_coord: ICoordinate) => {
         let hex = board.getHex(spot_coord);
-        return hex.is("controllable") && hex.is("controlledBy") != this.team;
+        return (
+          hex.is(HexFlag.Controllable) &&
+          hex.is(HexFlag.ControlledBy, this.team)
+        );
       })
       .map((destination: ICoordinate) =>
         new Action("vanilla.control", this.id).control(destination, this.team),

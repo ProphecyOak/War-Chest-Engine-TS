@@ -1,6 +1,6 @@
 import { ISubscription } from "../../../game/eventBus";
-import { IAction, UnitID } from "../../action";
-import { Unit } from "../../unit";
+import { IAction } from "../../action";
+import { Unit, UnitID } from "../../unit";
 import { UnitEventBus } from "../../unitEvents";
 
 export default class Swordsman extends Unit {

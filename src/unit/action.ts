@@ -1,11 +1,10 @@
 import { ICoordinate } from "../board/coordinate";
+import { UnitID } from "./unit";
 
 type FaceDownAction = "pass" | "initiative" | "recruit";
 type FaceUpAction = "move" | "attack" | "tactic" | "control";
 
 type ActionName = `${string}.${FaceDownAction | FaceUpAction}`;
-
-export type UnitID = `${string}.${string}`;
 
 export interface IAction {
   name: ActionName;
