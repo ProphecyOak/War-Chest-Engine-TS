@@ -1,6 +1,6 @@
 import { Board } from "../board";
 import { Coordinate, ICoordinate } from "../coordinate";
-import { Hex, IHex } from "../hex";
+import { Hex, HexFlag, IHex } from "../hex";
 
 export default class Vanilla extends Board {
   protected _hexes: (IHex | null)[][];
@@ -15,8 +15,19 @@ export default class Vanilla extends Board {
         this._hexes.at(-1)!.push(thisHexInBoard ? new Hex() : null);
       }
     }
-    [new Coordinate(4, 4)].forEach((coord: ICoordinate) =>
-      this.getHex(coord).set("controllable", 1),
+    [
+      new Coordinate(5, 0),
+      new Coordinate(6, 1),
+      new Coordinate(3, 1),
+      new Coordinate(1, 2),
+      new Coordinate(4, 2),
+      new Coordinate(2, 4),
+      new Coordinate(5, 4),
+      new Coordinate(0, 5),
+      new Coordinate(3, 5),
+      new Coordinate(1, 6),
+    ].forEach((coord: ICoordinate) =>
+      this.getHex(coord).set(HexFlag.Controllable, 1),
     );
   }
 

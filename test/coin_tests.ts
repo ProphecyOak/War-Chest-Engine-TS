@@ -1,4 +1,4 @@
-import { expect, test } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import * as CoinCollections from "../src/coin/collections";
 import { Coin, ICoin } from "../src/coin/coin";
 

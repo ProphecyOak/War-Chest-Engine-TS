@@ -1,4 +1,5 @@
 import { ICoordinate } from "../board/coordinate";
+import * as CoinCollections from "../coin/collections";
 import { UnitID } from "./unit";
 
 type FaceDownAction = "pass" | "initiative" | "recruit";
@@ -19,11 +20,28 @@ export interface IAction {
   controlled: Map<ICoordinate, number>;
   control(loc: ICoordinate, team: number): IAction;
 
-  recruited: Map<UnitID, number>;
-  recruit(unit: UnitID, amount: number): IAction;
+  shifted: Map<
+    {
+      origin: CoinCollections.ICoinCollection;
+      destination: CoinCollections.ICoinCollection;
+    },
+    number
+  >;
+  shift(
+    origin: CoinCollections.ICoinCollection,
+    destination: CoinCollections.ICoinCollection,
+    amount: number,
+  ): IAction;
 
-  deployed: Map<{ unit: UnitID; amount: number }, ICoordinate>;
-  deploy(unit: UnitID, amount: number, loc: ICoordinate): IAction;
+  deployed: Map<
+    { origin: CoinCollections.ICoinStack; amount: number },
+    ICoordinate
+  >;
+  deploy(
+    origin: CoinCollections.ICoinStack,
+    loc: ICoordinate,
+    amount?: number,
+  ): IAction;
 }
 
 export class Action implements IAction {
@@ -32,8 +50,17 @@ export class Action implements IAction {
   damaged: Map<ICoordinate, number> = new Map();
   moved: Map<{ loc: ICoordinate; depth: number }, ICoordinate> = new Map();
   controlled: Map<ICoordinate, number> = new Map();
-  recruited: Map<UnitID, number> = new Map();
-  deployed: Map<{ unit: UnitID; amount: number }, ICoordinate> = new Map();
+  shifted: Map<
+    {
+      origin: CoinCollections.ICoinCollection;
+      destination: CoinCollections.ICoinCollection;
+    },
+    number
+  > = new Map();
+  deployed: Map<
+    { origin: CoinCollections.ICoinStack; amount: number },
+    ICoordinate
+  > = new Map();
 
   constructor(name: ActionName, actor: UnitID) {
     this.name = name;
@@ -59,13 +86,27 @@ export class Action implements IAction {
     return this;
   }
 
-  recruit(unit: UnitID, amount: number): IAction {
-    this.recruited.set(unit, amount);
+  shift(
+    origin: CoinCollections.ICoinCollection,
+    destination: CoinCollections.ICoinCollection,
+    amount: number,
+  ): IAction {
+    this.shifted.set(
+      {
+        origin,
+        destination,
+      },
+      amount,
+    );
     return this;
   }
 
-  deploy(unit: UnitID, amount: number, loc: ICoordinate): IAction {
-    this.deployed.set({ unit, amount }, loc);
+  deploy(
+    origin: CoinCollections.ICoinStack,
+    loc: ICoordinate,
+    amount: number,
+  ): IAction {
+    this.deployed.set({ origin, amount }, loc);
     return this;
   }
 
@@ -75,7 +116,7 @@ export class Action implements IAction {
       moved: Array.from(this.moved.entries()),
       damaged: Array.from(this.damaged.entries()),
       controlled: Array.from(this.controlled.entries()),
-      recruited: Array.from(this.recruited.entries()),
+      recruited: Array.from(this.shifted.entries()),
       deployed: Array.from(this.deployed.entries()),
     };
   }
