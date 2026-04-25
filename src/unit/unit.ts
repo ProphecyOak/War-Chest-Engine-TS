@@ -20,6 +20,8 @@ abstract class Playable implements IPlayable {
   get team(): number {
     return this.player.team;
   }
+  subscriptions: ISubscription[] = [];
+
   constructor(player: IPlayer) {
     this.player = player;
     this.initializeListeners();
@@ -30,7 +32,6 @@ abstract class Playable implements IPlayable {
 }
 
 export abstract class Unit extends Playable {
-  subscriptions: ISubscription[] = [];
   boardLocations: ICoordinate[] = [];
 
   unitActionsAvailable(board: IBoard): IAction[] {

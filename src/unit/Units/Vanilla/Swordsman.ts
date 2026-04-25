@@ -1,7 +1,5 @@
-import { ISubscription } from "../../../game/eventBus";
-import { IAction } from "../../../game/action";
 import { Unit, UnitID } from "../../unit";
-import { UnitEventBus } from "../../unitEvents";
+import { UnitEvent, UnitEventBus } from "../../unitEvents";
 
 export default class Swordsman extends Unit {
   id: UnitID = "vanilla.swordsman";
@@ -9,14 +7,18 @@ export default class Swordsman extends Unit {
   initializeListeners(): void {
     let unitEvents = UnitEventBus.instance;
     this.subscriptions.push(
-      unitEvents.subscribe((event: IAction) => {
-        if (event.name == "vanilla.attack" && event.actor == this.id)
+      unitEvents.subscribe((event: UnitEvent) => {
+        if (
+          event.type == "vanilla.attack" &&
+          event.actor == "vanilla.swordsman"
+        )
           this.onPerformsAttack(event);
       }),
     );
+    //FIXME filter Swordsman trigger
   }
 
-  onPerformsAttack(event: IAction): void {
+  onPerformsAttack(event: UnitEvent): void {
     //FIXME Swordsman Triggers Bonus Move.
     console.log("Swordsman can move.");
   }

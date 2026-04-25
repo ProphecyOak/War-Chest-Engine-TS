@@ -5,7 +5,6 @@ import { IHex } from "./hex";
 export interface IBoard {
   getHex(coord: ICoordinate): IHex;
   inBoard(coord: ICoordinate): boolean;
-  resolveAction(action: IAction): void;
 }
 
 export abstract class Board implements IBoard {
@@ -34,6 +33,4 @@ export abstract class Board implements IBoard {
   }
 
   abstract inBoard(coord: ICoordinate): boolean;
-
-  resolveAction(action: IAction): void {}
 }

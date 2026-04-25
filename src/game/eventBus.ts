@@ -17,7 +17,7 @@ class Subscription<T> implements ISubscription {
 }
 
 export interface IEventBus<T> {
-  fire(event: T, payload?: any): void;
+  fire(event: T): void;
   subscribe(handler: EventHandler<T>): ISubscription;
   unsubscribe(key: string): void;
 }
