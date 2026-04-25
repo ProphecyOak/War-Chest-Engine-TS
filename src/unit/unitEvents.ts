@@ -1,5 +1,5 @@
 import { EventBus } from "../game/eventBus";
-import { IAction } from "./action";
+import { IAction } from "../game/action";
 
 export class UnitEventBus extends EventBus<IAction> {
   private static _instance: UnitEventBus;

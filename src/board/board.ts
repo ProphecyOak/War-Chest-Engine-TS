@@ -1,7 +1,6 @@
-import { IAction } from "../unit/action";
+import { IAction } from "../game/action";
 import { ICoordinate } from "./coordinate";
-import { HexFlag, IHex } from "./hex";
-import * as CoinCollections from "../coin/collections";
+import { IHex } from "./hex";
 
 export interface IBoard {
   getHex(coord: ICoordinate): IHex;
@@ -36,45 +35,5 @@ export abstract class Board implements IBoard {
 
   abstract inBoard(coord: ICoordinate): boolean;
 
-  resolveAction(action: IAction): void {
-    action.controlled.forEach((team: number, loc: ICoordinate) =>
-      this.getHex(loc).set(HexFlag.ControlledBy, team),
-    );
-
-    action.damaged.forEach((strength: number, loc: ICoordinate) => {
-      for (let i = 0; i < strength; i++) {
-        this.getHex(loc).coinStack.transferCoin(CoinCollections.Box);
-      }
-    });
-
-    action.deployed.forEach(
-      (
-        loc: ICoordinate,
-        x: { origin: CoinCollections.ICoinStack; amount: number },
-      ) => {
-        x.origin.transferCoin(this.getHex(loc).coinStack);
-      },
-    );
-
-    action.moved.forEach(
-      (start: ICoordinate, x: { loc: ICoordinate; depth: number }) => {
-        this.getHex(start).coinStack.moveTo(
-          this.getHex(x.loc).coinStack,
-          x.depth,
-        );
-      },
-    );
-
-    action.shifted.forEach(
-      (
-        amount: number,
-        x: {
-          origin: CoinCollections.ICoinCollection;
-          destination: CoinCollections.ICoinCollection;
-        },
-      ) => {
-        for (let i = 0; i < amount; i++) x.origin.transferCoin(x.destination);
-      },
-    );
-  }
+  resolveAction(action: IAction): void {}
 }

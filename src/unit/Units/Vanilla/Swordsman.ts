@@ -1,5 +1,5 @@
 import { ISubscription } from "../../../game/eventBus";
-import { IAction } from "../../action";
+import { IAction } from "../../../game/action";
 import { Unit, UnitID } from "../../unit";
 import { UnitEventBus } from "../../unitEvents";
 
