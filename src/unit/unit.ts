@@ -6,13 +6,13 @@ import { Action, IAction } from "../game/action";
 import { IPlayer } from "../game/player";
 
 export type UnitID = `${string}.${string}`;
-type PlayableID = UnitID | "vanilla.royal_coin";
+export type PlayableID = UnitID | "vanilla.royal_coin";
 
 export interface IPlayable {
   unitActionsAvailable(board: IBoard): IAction[];
   get team(): number;
   get player(): IPlayer;
-  id: PlayableID;
+  get id(): PlayableID;
 }
 
 abstract class Playable implements IPlayable {
@@ -43,46 +43,11 @@ export abstract class Unit extends Playable {
   }
 
   moveOptions(board: IBoard): IAction[] {
-    return this.boardLocations
-      .map(
-        (location: ICoordinate) =>
-          location
-            .neighbors()
-            .filter((neighbor_coord: ICoordinate) =>
-              board.inBoard(neighbor_coord),
-            )
-            .filter(
-              (neighbor_coord: ICoordinate) =>
-                board.getHex(neighbor_coord).coinStack.size == 0,
-            )
-            .map(
-              (destination: ICoordinate) => new Action(this, "vanilla.move"),
-            ), //FIXME MOVE
-      )
-      .flat();
+    throw new Error("Method Not Implemented.");
   }
 
   attackOptions(board: IBoard): IAction[] {
-    return this.boardLocations
-      .map(
-        (location: ICoordinate) =>
-          location
-            .neighbors()
-            .filter((neighbor_coord: ICoordinate) =>
-              board.inBoard(neighbor_coord),
-            )
-            .filter((neighbor_coord: ICoordinate) => {
-              let hex = board.getHex(neighbor_coord);
-              return (
-                hex.coinStack.size != 0 &&
-                hex.coinStack.getCoin().team != this.team
-              );
-            })
-            .map(
-              (destination: ICoordinate) => new Action(this, "vanilla.attack"),
-            ), //FIXME ATTACK
-      )
-      .flat();
+    throw new Error("Method Not Implemented.");
   }
 
   tacticOptions(board: IBoard): IAction[] {
@@ -90,15 +55,7 @@ export abstract class Unit extends Playable {
   }
 
   controlOptions(board: IBoard): IAction[] {
-    return this.boardLocations
-      .filter((spot_coord: ICoordinate) => {
-        let hex = board.getHex(spot_coord);
-        return (
-          hex.is(HexFlag.Controllable) &&
-          hex.is(HexFlag.ControlledBy, this.team)
-        );
-      })
-      .map((destination: ICoordinate) => new Action(this, "vanilla.control")); //FIXME CONTROL
+    throw new Error("Method Not Implemented.");
   }
 }
 

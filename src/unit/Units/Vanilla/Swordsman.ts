@@ -1,8 +1,13 @@
-import { Unit, UnitID } from "../../unit";
+import { PlayableID, Unit, UnitID } from "../../unit";
 import { UnitEvent, UnitEventBus } from "../../unitEvents";
+import { memoizedPlayable } from "../../memoizablePlayable";
 
-export default class Swordsman extends Unit {
-  id: UnitID = "vanilla.swordsman";
+class Swordsman extends Unit {
+  static id: UnitID = "vanilla.swordsman";
+
+  get id(): PlayableID {
+    return Swordsman.id;
+  }
 
   initializeListeners(): void {
     let unitEvents = UnitEventBus.instance;
@@ -10,7 +15,7 @@ export default class Swordsman extends Unit {
       unitEvents.subscribe((event: UnitEvent) => {
         if (
           event.type == "vanilla.attack" &&
-          event.actor == "vanilla.swordsman"
+          event.actor.id == "vanilla.swordsman"
         )
           this.onPerformsAttack(event);
       }),
@@ -23,3 +28,5 @@ export default class Swordsman extends Unit {
     console.log("Swordsman can move.");
   }
 }
+
+export default memoizedPlayable(Swordsman);

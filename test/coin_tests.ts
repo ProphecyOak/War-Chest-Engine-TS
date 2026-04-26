@@ -5,9 +5,8 @@ import { Coin, ICoin } from "../src/coin/coin";
 describe("Coin", () => {
   let myCoin: ICoin;
   test("init Coin.", () => {
-    myCoin = new Coin("vanilla.pikeman", 0);
+    myCoin = new Coin("vanilla.pikeman");
     expect(myCoin.id).toEqual("vanilla.pikeman");
-    expect(myCoin.team).toEqual(0);
   });
 
   test("flipFacedown, flipFaceup.", () => {
@@ -31,7 +30,7 @@ function testCollection(
   });
 
   test("addCoin", () => {
-    myPile.addCoin(new Coin("vanilla.pikeman", 0));
+    myPile.addCoin(new Coin("vanilla.pikeman"));
     expect(myPile.getCoin().id).toEqual("vanilla.pikeman");
     expect(myPile.size).toEqual(1);
     expect(() => myPile.getCoin(1)).toThrow(/out of bounds/);
@@ -46,9 +45,9 @@ function testCollection(
   });
 
   test("addCoin (multiple).", () => {
-    myPile.addCoin(new Coin("vanilla.pikeman", 0));
-    myPile.addCoin(new Coin("vanilla.swordsman", 0));
-    myPile.addCoin(new Coin("vanilla.swordsman", 0));
+    myPile.addCoin(new Coin("vanilla.pikeman"));
+    myPile.addCoin(new Coin("vanilla.swordsman"));
+    myPile.addCoin(new Coin("vanilla.swordsman"));
     expect(myPile.size).toEqual(3);
     expect(myPile.getCoin(0).id).toEqual("vanilla.pikeman");
     expect(myPile.getCoin(1).id).toEqual("vanilla.swordsman");
@@ -65,9 +64,9 @@ describe("Coin Stack", () => {
 
   let myStack: CoinCollections.ICoinStack = new CoinCollections.Stack();
   test("getSubstack", () => {
-    myStack.addCoin(new Coin("vanilla.pikeman", 0));
-    myStack.addCoin(new Coin("vanilla.swordsman", 0));
-    myStack.addCoin(new Coin("vanilla.swordsman", 0));
+    myStack.addCoin(new Coin("vanilla.pikeman"));
+    myStack.addCoin(new Coin("vanilla.swordsman"));
+    myStack.addCoin(new Coin("vanilla.swordsman"));
     expect(myStack.getSubstack(0).size).toEqual(3);
     expect(myStack.getSubstack(1).size).toEqual(2);
   });
@@ -94,7 +93,7 @@ describe("Coin Stack", () => {
 
   test("addStack (like)", () => {
     let thirdStack: CoinCollections.ICoinStack = new CoinCollections.Stack();
-    thirdStack.addCoin(new Coin("vanilla.pikeman", 0));
+    thirdStack.addCoin(new Coin("vanilla.pikeman"));
     secondStack.addStack(thirdStack);
     expect(secondStack.size).toEqual(4);
     expect(secondStack.getSubstack(0).size).toEqual(4);

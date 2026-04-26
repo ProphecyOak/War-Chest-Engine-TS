@@ -38,27 +38,27 @@ describe("Board", () => {
 });
 
 describe("Effects", () => {
-  let myGame = new Game();
+  let myGame = Game.instance;
 
-  let myPikeman = new Units.Vanilla.Pikeman(myGame.players.at(0)!);
+  let myPikeman = Units.Vanilla.Pikeman.of(myGame.players.at(0)!);
   let pikemanLocation: ICoordinate = new Coordinate(4, 4);
   myGame.board
     .getHex(pikemanLocation)
-    .coinStack.addCoin(new Coin("vanilla.pikeman", 0));
+    .coinStack.addCoin(new Coin("vanilla.pikeman"));
 
-  let mySwordsman = new Units.Vanilla.Swordsman(myGame.players.at(0)!);
+  let mySwordsman = Units.Vanilla.Swordsman.of(myGame.players.at(1)!);
   let swordsmanLocation: ICoordinate = new Coordinate(3, 4);
   myGame.board
     .getHex(swordsmanLocation)
-    .coinStack.addCoin(new Coin("vanilla.swordsman", 0));
+    .coinStack.addCoin(new Coin("vanilla.swordsman"));
 
   test("damage lone piece", () => {
     expect(myGame.board.getHex(pikemanLocation).coinStack.size).toEqual(1);
     let damageLone: IAction = new Action(mySwordsman, "vanilla.attack");
     damageLone.addEffect(new Effect.Damage(pikemanLocation, 1), {
       type: "vanilla.attack",
-      actor: "vanilla.swordsman",
-      target: "vanilla.pikeman",
+      actor: { id: "vanilla.swordsman", stackNumber: 0 },
+      target: { id: "vanilla.pikeman", stackNumber: 0 },
     });
     myGame.resolveAction(damageLone);
     expect(myGame.board.getHex(pikemanLocation).coinStack.size).toEqual(0);

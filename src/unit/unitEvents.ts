@@ -1,3 +1,4 @@
+import { ICoordinate } from "../board/coordinate";
 import { EventBus } from "../game/eventBus";
 import { UnitID } from "./unit";
 
@@ -10,8 +11,15 @@ export class UnitEventBus extends EventBus<UnitEvent> {
   }
 }
 
-export interface UnitEvent {
+type UnitIdentifier = { id: UnitID; stackNumber: number };
+
+export type UnitEvent = DamageEvent;
+
+interface BaseEvent {
   type: string;
-  actor?: UnitID;
-  target?: UnitID;
+}
+
+interface DamageEvent extends BaseEvent {
+  actor: UnitIdentifier;
+  target: UnitIdentifier;
 }

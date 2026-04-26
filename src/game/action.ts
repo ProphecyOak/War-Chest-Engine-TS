@@ -4,8 +4,9 @@ import { IGameEffect } from "./gameEffect";
 
 type FaceDownAction = "pass" | "initiative" | "recruit";
 type FaceUpAction = "move" | "attack" | "tactic" | "control";
+type OtherAction = "thorns";
 
-type ActionName = `${string}.${FaceDownAction | FaceUpAction}`;
+type ActionName = `${string}.${FaceDownAction | FaceUpAction | OtherAction}`;
 
 export interface IAction {
   name: ActionName;
