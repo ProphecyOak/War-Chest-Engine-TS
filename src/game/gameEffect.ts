@@ -33,7 +33,7 @@ export namespace Effect {
       targetStack = game.board.getHex(this.location).coinStack;
       let stackHolder: CoinCollections.ICoinStack = new CoinCollections.Stack();
       if (this.depth > 0) {
-        targetStack.moveTo(stackHolder, this.depth - 1);
+        targetStack.moveTo(stackHolder, this.depth);
       }
       for (let i = 0; i < this.strength; i++)
         targetStack.transferCoin(game.box);

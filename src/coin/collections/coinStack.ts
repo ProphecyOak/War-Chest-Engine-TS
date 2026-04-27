@@ -11,7 +11,7 @@ export default class CoinStack extends CoinCollection implements ICoinStack {
   private _top_stack: CoinStack | undefined;
   private parent_stack: CoinStack | undefined;
   get substackCount(): number {
-    return 1 + (this._top_stack ? this._top_stack.substackCount : 0);
+    return 1 + (this._top_stack?.substackCount ?? 0);
   }
 
   getSubstack(idx: number = 0): CoinStack {
@@ -24,7 +24,7 @@ export default class CoinStack extends CoinCollection implements ICoinStack {
   }
 
   get size(): number {
-    return this.coins.length + (this._top_stack ? this._top_stack.size : 0);
+    return this.coins.length + (this._top_stack?.size ?? 0);
   }
 
   getCoin(idx?: number): ICoin {
@@ -94,6 +94,7 @@ export default class CoinStack extends CoinCollection implements ICoinStack {
     if (this._top_stack == undefined) {
       if (
         this.coins.length == 0 ||
+        other.coins.length == 0 ||
         this.getCoin(-1)!.id == other.getCoin(-1)!.id
       ) {
         other.copyStackTo(this);

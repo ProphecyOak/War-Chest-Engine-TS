@@ -42,25 +42,79 @@ describe("Effects", () => {
 
   let myPikeman = Units.Vanilla.Pikeman.of(myGame.players.at(0)!);
   let pikemanLocation: ICoordinate = new Coordinate(4, 4);
-  myGame.board
-    .getHex(pikemanLocation)
-    .coinStack.addCoin(new Coin("vanilla.pikeman"));
+  function addPikeman(
+    amount: number = 1,
+    location: ICoordinate = pikemanLocation,
+  ) {
+    for (let i = 0; i < amount; i++)
+      myGame.board
+        .getHex(location)
+        .coinStack.addCoin(new Coin("vanilla.pikeman"));
+  }
 
   let mySwordsman = Units.Vanilla.Swordsman.of(myGame.players.at(1)!);
   let swordsmanLocation: ICoordinate = new Coordinate(3, 4);
-  myGame.board
-    .getHex(swordsmanLocation)
-    .coinStack.addCoin(new Coin("vanilla.swordsman"));
+
+  function addSwordsman(
+    amount: number = 1,
+    location: ICoordinate = swordsmanLocation,
+  ) {
+    for (let i = 0; i < amount; i++)
+      myGame.board
+        .getHex(location)
+        .coinStack.addCoin(new Coin("vanilla.swordsman"));
+  }
 
   test("damage lone piece", () => {
-    expect(myGame.board.getHex(pikemanLocation).coinStack.size).toEqual(1);
+    let location: ICoordinate = pikemanLocation;
+    addPikeman(1);
+    expect(myGame.board.getHex(location).coinStack.size).toEqual(1);
     let damageLone: IAction = new Action(mySwordsman, "vanilla.attack");
-    damageLone.addEffect(new Effect.Damage(pikemanLocation, 1), {
+    damageLone.addEffect(new Effect.Damage(location, 1), {
       type: "vanilla.attack",
-      actor: { id: "vanilla.swordsman", stackNumber: 0 },
+      actor: {
+        id: myGame.board.getHex(location).coinStack.getCoin().id,
+        stackNumber: 0,
+      },
       target: { id: "vanilla.pikeman", stackNumber: 0 },
     });
     myGame.resolveAction(damageLone);
-    expect(myGame.board.getHex(pikemanLocation).coinStack.size).toEqual(0);
+    expect(myGame.board.getHex(location).coinStack.size).toEqual(0);
+  });
+
+  test("damage bolstered piece", () => {
+    let location: ICoordinate = pikemanLocation;
+    addPikeman(2);
+    expect(myGame.board.getHex(location).coinStack.size).toEqual(2);
+    let damageLone: IAction = new Action(mySwordsman, "vanilla.attack");
+    damageLone.addEffect(new Effect.Damage(location, 1), {
+      type: "vanilla.attack",
+      actor: {
+        id: "vanilla.god",
+        stackNumber: 0,
+      },
+      target: { id: "vanilla.pikeman", stackNumber: 0 },
+    });
+    myGame.resolveAction(damageLone);
+    expect(myGame.board.getHex(location).coinStack.size).toEqual(1);
+  });
+
+  test("damage bottom stack", () => {
+    let location: ICoordinate = pikemanLocation;
+    expect(myGame.board.getHex(location).coinStack.size).toEqual(1);
+    addPikeman(1);
+    addSwordsman(1, pikemanLocation);
+    expect(myGame.board.getHex(location).coinStack.size).toEqual(3);
+    let damageLone: IAction = new Action(mySwordsman, "vanilla.attack");
+    damageLone.addEffect(new Effect.Damage(location, 1, 1), {
+      type: "vanilla.attack",
+      actor: {
+        id: "vanilla.god",
+        stackNumber: 0,
+      },
+      target: { id: "vanilla.pikeman", stackNumber: 0 },
+    });
+    myGame.resolveAction(damageLone);
+    expect(myGame.board.getHex(location).coinStack.size).toEqual(2);
   });
 });

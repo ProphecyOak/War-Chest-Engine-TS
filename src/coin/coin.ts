@@ -1,15 +1,15 @@
 import { PlayableID } from "../unit/unit";
 
 export interface ICoin {
-  get id(): string;
+  get id(): PlayableID;
   get faceup(): boolean;
   flipFaceup(): void;
   flipFacedown(): void;
 }
 
 export class Coin implements ICoin {
-  private _id: string;
-  get id(): string {
+  private _id: PlayableID;
+  get id(): PlayableID {
     return this._id;
   }
 
