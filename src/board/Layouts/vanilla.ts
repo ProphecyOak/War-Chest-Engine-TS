@@ -15,7 +15,7 @@ export default class Vanilla extends Board {
         this._hexes.at(-1)!.push(thisHexInBoard ? new Hex() : null);
       }
     }
-    [
+    let controlSpots = [
       new Coordinate(5, 0),
       new Coordinate(6, 1),
       new Coordinate(3, 1),
@@ -26,9 +26,20 @@ export default class Vanilla extends Board {
       new Coordinate(0, 5),
       new Coordinate(3, 5),
       new Coordinate(1, 6),
-    ].forEach((coord: ICoordinate) =>
+    ];
+    controlSpots.forEach((coord: ICoordinate) =>
       this.getHex(coord).set(HexFlag.Controllable, 1),
     );
+    controlSpots
+      .slice(0, 2)
+      .forEach((coord: ICoordinate) =>
+        this.getHex(coord).set(HexFlag.ControlledBy, 0),
+      );
+    controlSpots
+      .slice(-2)
+      .forEach((coord: ICoordinate) =>
+        this.getHex(coord).set(HexFlag.ControlledBy, 1),
+      );
   }
 
   inBoard(coord: ICoordinate): boolean {

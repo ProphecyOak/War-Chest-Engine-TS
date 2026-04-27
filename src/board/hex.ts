@@ -23,7 +23,7 @@ export class Hex implements IHex {
   };
 
   is(flagName: HexFlag, comparison: number = 1): boolean {
-    return (this._flags[flagName] ?? 0) == comparison;
+    return (this._flags[flagName] ?? -1) == comparison;
   }
 
   set(flagName: HexFlag, value: number): void {

@@ -2,6 +2,7 @@ import { ICoordinate } from "../board/coordinate";
 import { IGame } from "./game";
 import * as CoinCollections from "../coin/collections";
 import { UnitEventBus } from "../unit/unitEvents";
+import { HexFlag } from "../board/hex";
 
 export interface IGameEffect {
   execute(game: IGame): void;
@@ -17,6 +18,12 @@ export namespace Effect {
     strength: number;
     location: ICoordinate;
 
+    /**
+     *
+     * @param location Board coordinate to damage
+     * @param strength Number of coins to remove
+     * @param depth Substack to hit. 0 is top stack, and so on down
+     */
     constructor(
       location: ICoordinate,
       strength: number = 1,
@@ -35,9 +42,28 @@ export namespace Effect {
       if (this.depth > 0) {
         targetStack.moveTo(stackHolder, this.depth);
       }
-      for (let i = 0; i < this.strength; i++)
+      for (let i = 0; i < this.strength; i++) {
         targetStack.transferCoin(game.box);
+      }
       stackHolder.moveTo(targetStack);
+    }
+  }
+
+  export class Control extends GameEffect {
+    location: ICoordinate;
+    team: number;
+
+    constructor(location: ICoordinate, team: number) {
+      super();
+      this.location = location;
+      this.team = team;
+    }
+
+    execute(game: IGame): void {
+      let hex = game.board.getHex(this.location);
+      if (!hex.is(HexFlag.Controllable))
+        throw new Error("This hex cannot be controlled.");
+      hex.set(HexFlag.ControlledBy, this.team);
     }
   }
 }

@@ -13,13 +13,20 @@ export class UnitEventBus extends EventBus<UnitEvent> {
 
 type UnitIdentifier = { id: UnitID; stackNumber: number };
 
-export type UnitEvent = DamageEvent;
+export type UnitEvent = AttackEvent | ControlEvent;
 
 interface BaseEvent {
   type: string;
 }
 
-interface DamageEvent extends BaseEvent {
+interface AttackEvent extends BaseEvent {
+  type: "vanilla.attack";
   actor: UnitIdentifier;
   target: UnitIdentifier;
+}
+
+interface ControlEvent extends BaseEvent {
+  type: "vanilla.control";
+  actor: UnitIdentifier;
+  target: ICoordinate;
 }
