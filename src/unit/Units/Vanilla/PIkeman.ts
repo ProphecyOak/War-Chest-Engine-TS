@@ -27,7 +27,7 @@ class Pikeman extends Unit {
 
   onAttacked(event: UnitEvent): void {
     //FIXME Pikeman Thorns Trigger
-    console.log("Pikeman deals thorns damage.");
+    // console.log("Pikeman deals thorns damage.");
     let thorns: IAction = new Action(this, "vanilla.thorns");
     // thorns.addEffect(new Effect.Damage(event.actor,1), {
     //   type: "vanilla.thorns",

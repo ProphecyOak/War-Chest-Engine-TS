@@ -25,8 +25,8 @@ export abstract class CoinCollection implements ICoinCollection {
 
 export interface ICoinStack extends ICoinCollection {
   get substackCount(): number;
-  getSubstack(idx: number): ICoinStack;
-  moveTo(destination: ICoinStack, depth?: number): void;
+  stackFromBottom(idx: number): ICoinStack;
+  moveTo(destination: ICoinStack): void;
   addStack(other: ICoinStack): void;
 }
 

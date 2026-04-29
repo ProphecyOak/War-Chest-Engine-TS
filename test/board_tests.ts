@@ -7,7 +7,6 @@ import { Coordinate, ICoordinate } from "../src/board/coordinate";
 import { Game } from "../src/game/game";
 import { Coin } from "../src/coin/coin";
 import { Action, IAction } from "../src/game/action";
-import { Player } from "../src/game/player";
 import { Effect } from "../src/game/gameEffect";
 
 describe("Board", () => {
@@ -180,6 +179,71 @@ describe("Effects", () => {
       expect(() => myGame.resolveAction(controlUncontrollable)).toThrow(
         /cannot be controlled/,
       );
+    });
+  });
+
+  describe("Move Effect", () => {
+    let location1 = new Coordinate(5, 0);
+    let hex1 = myGame.board.getHex(location1);
+    let location2 = location1.add(new Coordinate(0, 1));
+    let hex2 = myGame.board.getHex(location2);
+    test("move lone piece", () => {
+      expect(hex1.coinStack.size).toEqual(0);
+      expect(hex2.coinStack.size).toEqual(0);
+      addSwordsman(1, location1);
+      expect(hex1.coinStack.size).toEqual(1);
+      let moveLone: IAction = new Action(mySwordsman, "vanilla.move");
+      moveLone.addEffect(new Effect.Move(location1, location2), {
+        type: "vanilla.move",
+        actor: {
+          id: "vanilla.swordsman",
+          stackNumber: 0,
+        },
+        target: location2,
+      });
+      myGame.resolveAction(moveLone);
+      expect(hex1.coinStack.size).toEqual(0);
+      expect(hex2.coinStack.size).toEqual(1);
+    });
+
+    test("move stacked pieces", () => {
+      expect(hex1.coinStack.size).toEqual(0);
+      expect(hex2.coinStack.size).toEqual(1);
+      addPikeman(1, location1);
+      addSwordsman(1, location1);
+      expect(hex1.coinStack.size).toEqual(2);
+      let moveStacked: IAction = new Action(mySwordsman, "vanilla.move");
+      moveStacked.addEffect(new Effect.Move(location1, location2), {
+        type: "vanilla.move",
+        actor: {
+          id: "vanilla.swordsman",
+          stackNumber: 0,
+        },
+        target: location2,
+      });
+      myGame.resolveAction(moveStacked);
+      expect(hex1.coinStack.size).toEqual(0);
+      expect(hex2.coinStack.size).toEqual(3);
+    });
+
+    test("move lower stack", () => {
+      expect(hex1.coinStack.size).toEqual(0);
+      expect(hex2.coinStack.size).toEqual(3);
+      let moveLower: IAction = new Action(myPikeman, "vanilla.move");
+      moveLower.addEffect(new Effect.Move(location2, location1, 1, false), {
+        type: "vanilla.move",
+        actor: {
+          id: "vanilla.pikeman",
+          stackNumber: 0,
+        },
+        target: location1,
+      });
+      console.log("START");
+      myGame.resolveAction(moveLower);
+      console.log(hex1.coinStack);
+      console.log(hex2.coinStack);
+      expect(hex1.coinStack.size).toEqual(1);
+      expect(hex2.coinStack.size).toEqual(2);
     });
   });
 });

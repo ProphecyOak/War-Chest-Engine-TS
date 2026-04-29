@@ -25,7 +25,7 @@ class Swordsman extends Unit {
 
   onPerformsAttack(event: UnitEvent): void {
     //FIXME Swordsman Triggers Bonus Move.
-    console.log("Swordsman can move.");
+    // console.log("Swordsman can move.");
   }
 }
 
