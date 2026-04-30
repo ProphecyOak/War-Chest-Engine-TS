@@ -71,34 +71,33 @@ export namespace Effect {
   export class Move extends GameEffect {
     start_location: ICoordinate;
     destination: ICoordinate;
-    idx: number | undefined;
-    take_all: boolean;
+    idx: number;
+    amount: number | undefined;
 
+    /**
+     * Moves a stack to another hex.
+     * @param start_location hex to pull coins from
+     * @param destination hex to send coins to
+     * @param idx start_idx (bottom up) for stack to bring
+     * @param amount whether you should just take that stack
+     */
     constructor(
       start_location: ICoordinate,
       destination: ICoordinate,
-      idx?: number,
-      take_all: boolean = true,
+      idx: number = 0,
+      amount?: number,
     ) {
       super();
       this.start_location = start_location;
       this.destination = destination;
       this.idx = idx;
-      this.take_all = take_all;
+      this.amount = amount;
     }
 
     execute(game: IGame): void {
       let start = game.board.getHex(this.start_location);
       let end = game.board.getHex(this.destination);
-      let tempStack: CoinCollections.ICoinStack | undefined;
-      if (!this.take_all) {
-        tempStack = new CoinStack();
-        start.coinStack.stackFromBottom(this.idx! + 1).moveTo(tempStack);
-      }
-      start.coinStack.moveTo(end.coinStack);
-      if (!this.take_all) {
-        tempStack!.moveTo(start.coinStack);
-      }
+      start.coinStack.coinSlice(this.idx!, this.amount).moveTo(end.coinStack);
     }
   }
 }

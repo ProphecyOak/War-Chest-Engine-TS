@@ -221,7 +221,11 @@ describe("Effects", () => {
         },
         target: location2,
       });
+      console.log(hex1.coinStack);
+      console.log(hex2.coinStack);
       myGame.resolveAction(moveStacked);
+      console.log(hex1.coinStack);
+      console.log(hex2.coinStack);
       expect(hex1.coinStack.size).toEqual(0);
       expect(hex2.coinStack.size).toEqual(3);
     });
@@ -230,7 +234,7 @@ describe("Effects", () => {
       expect(hex1.coinStack.size).toEqual(0);
       expect(hex2.coinStack.size).toEqual(3);
       let moveLower: IAction = new Action(myPikeman, "vanilla.move");
-      moveLower.addEffect(new Effect.Move(location2, location1, 1, false), {
+      moveLower.addEffect(new Effect.Move(location2, location1, 1, 1), {
         type: "vanilla.move",
         actor: {
           id: "vanilla.pikeman",
@@ -238,10 +242,23 @@ describe("Effects", () => {
         },
         target: location1,
       });
-      console.log("START");
       myGame.resolveAction(moveLower);
-      console.log(hex1.coinStack);
-      console.log(hex2.coinStack);
+      expect(hex1.coinStack.size).toEqual(1);
+      expect(hex2.coinStack.size).toEqual(2);
+    });
+
+    test("split stack", () => {
+      expect(hex2.coinStack.size).toEqual(2);
+      let moveLower: IAction = new Action(mySwordsman, "vanilla.move");
+      moveLower.addEffect(new Effect.Move(location2, location1, 1), {
+        type: "vanilla.move",
+        actor: {
+          id: "vanilla.pikeman",
+          stackNumber: 0,
+        },
+        target: location1,
+      });
+      myGame.resolveAction(moveLower);
       expect(hex1.coinStack.size).toEqual(1);
       expect(hex2.coinStack.size).toEqual(2);
     });

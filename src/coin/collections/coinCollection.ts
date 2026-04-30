@@ -5,6 +5,7 @@ export interface ICoinCollection {
   getCoin(idx?: number): ICoin;
   transferCoin(destination: ICoinCollection, idx?: number): ICoin;
   addCoin(coin: ICoin, idx?: number): void;
+  coinSlice(idx: number, size?: number): ICoinCollection;
 }
 
 export abstract class CoinCollection implements ICoinCollection {
@@ -14,6 +15,7 @@ export abstract class CoinCollection implements ICoinCollection {
   abstract getCoin(idx?: number): ICoin;
   abstract addCoin(coin: ICoin, idx?: number): void;
   protected abstract removeCoin(idx?: number): ICoin;
+  abstract coinSlice(idx: number, size?: number): CoinCollection;
 
   transferCoin(destination: ICoinCollection, idx?: number): ICoin {
     destination.addCoin(this.getCoin(idx));
@@ -24,13 +26,12 @@ export abstract class CoinCollection implements ICoinCollection {
 }
 
 export interface ICoinStack extends ICoinCollection {
-  get substackCount(): number;
-  stackFromBottom(idx: number): ICoinStack;
-  moveTo(destination: ICoinStack): void;
-  addStack(other: ICoinStack): void;
+  get isRoot(): boolean;
+  get isTop(): boolean;
+  stackSlice(idx: number, size?: number): ICoinStack;
 }
 
 export const emptyCollectionError = new Error("No coins in this collection.");
-export function outOfBoundsCollectionError(idx: number) {
-  return new Error(`Index ${idx} out of bounds on coin collection.`);
-}
+export const outOfBoundsCollectionError = new Error(
+  `Index out of bounds on coin collection.`,
+);

@@ -27,7 +27,7 @@ export default class CoinPile extends CoinCollection {
     }
     if (idx != null) {
       if (this.coins[idx] == undefined) {
-        throw outOfBoundsCollectionError(idx);
+        throw outOfBoundsCollectionError;
       }
       return this.coins[idx]!;
     } else {
@@ -41,6 +41,15 @@ export default class CoinPile extends CoinCollection {
     } else {
       this.coins.push(coin);
     }
+  }
+
+  coinSlice(idx: number, size?: number): CoinCollection {
+    let result = new CoinPile();
+    let sliceSize = size ?? this.size - idx;
+    for (let i = idx; i < idx + sliceSize; i++) {
+      this.transferCoin(result);
+    }
+    return result;
   }
 
   toString(): string {
