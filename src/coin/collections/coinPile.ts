@@ -43,15 +43,6 @@ export default class CoinPile extends CoinCollection {
     }
   }
 
-  coinSlice(idx: number, size?: number): CoinCollection {
-    let result = new CoinPile();
-    let sliceSize = size ?? this.size - idx;
-    for (let i = idx; i < idx + sliceSize; i++) {
-      this.transferCoin(result);
-    }
-    return result;
-  }
-
   toString(): string {
     return this.coins.join(",");
   }
