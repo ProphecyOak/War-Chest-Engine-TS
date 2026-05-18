@@ -53,214 +53,43 @@ describe("Board", () => {
 describe("Effects", () => {
   let myGame = Game.instance;
 
-  let myPikeman = Units.Vanilla.Pikeman.of(myGame.players.at(0)!);
-  let pikemanLocation: ICoordinate = new Coordinate(4, 4);
-  function addPikeman(
-    amount: number = 1,
-    location: ICoordinate = pikemanLocation,
-  ) {
-    for (let i = 0; i < amount; i++)
-      myGame.board
-        .getHex(location)
-        .coinStack.addCoin(new Coin("vanilla.pikeman"));
-  }
-
-  let mySwordsman = Units.Vanilla.Swordsman.of(myGame.players.at(1)!);
-  let swordsmanLocation: ICoordinate = new Coordinate(3, 4);
-
-  function addSwordsman(
-    amount: number = 1,
-    location: ICoordinate = swordsmanLocation,
-  ) {
-    for (let i = 0; i < amount; i++)
-      myGame.board
-        .getHex(location)
-        .coinStack.addCoin(new Coin("vanilla.swordsman"));
-  }
+  describe("Deploy Effect", () => {});
 
   describe("Damage Effect", () => {
     test("damage lone piece", () => {
-      let location: ICoordinate = pikemanLocation;
-      addPikeman(1);
-      expect(myGame.board.getHex(location).coinStack.size).toEqual(1);
-      let damageLone: IAction = new Action(mySwordsman, "vanilla.attack");
-      damageLone.addEffect(new Effect.Damage(location, 1), {
-        type: "vanilla.attack",
-        actor: {
-          id: myGame.board.getHex(location).coinStack.getCoin().id,
-          stackNumber: 0,
-        },
-        target: { id: "vanilla.pikeman", stackNumber: 0 },
-      });
-      myGame.resolveAction(damageLone);
-      expect(myGame.board.getHex(location).coinStack.size).toEqual(0);
+      throw new Error("Test not implemented.");
     });
 
     test("damage bolstered piece", () => {
-      let location: ICoordinate = pikemanLocation;
-      addPikeman(2);
-      expect(myGame.board.getHex(location).coinStack.size).toEqual(2);
-      let damageBolstered: IAction = new Action(mySwordsman, "vanilla.attack");
-      damageBolstered.addEffect(new Effect.Damage(location, 1), {
-        type: "vanilla.attack",
-        actor: {
-          id: "vanilla.god",
-          stackNumber: 0,
-        },
-        target: { id: "vanilla.pikeman", stackNumber: 0 },
-      });
-      myGame.resolveAction(damageBolstered);
-      expect(myGame.board.getHex(location).coinStack.size).toEqual(1);
+      throw new Error("Test not implemented.");
     });
 
     test("damage bottom stack", () => {
-      let location: ICoordinate = pikemanLocation;
-      expect(myGame.board.getHex(location).coinStack.size).toEqual(1);
-      addPikeman(1);
-      addSwordsman(1, pikemanLocation);
-      expect(myGame.board.getHex(location).coinStack.size).toEqual(3);
-      let damageBottom: IAction = new Action(mySwordsman, "vanilla.attack");
-      damageBottom.addEffect(new Effect.Damage(location, 1, 1), {
-        type: "vanilla.attack",
-        actor: {
-          id: "vanilla.god",
-          stackNumber: 0,
-        },
-        target: { id: "vanilla.pikeman", stackNumber: 0 },
-      });
-      myGame.resolveAction(damageBottom);
-      expect(myGame.board.getHex(location).coinStack.size).toEqual(2);
+      throw new Error("Test not implemented.");
     });
   });
 
   describe("Control Effect", () => {
     test("control controllable space", () => {
-      let location = new Coordinate(5, 0);
-      let controlControllable: IAction = new Action(
-        mySwordsman,
-        "vanilla.control",
-      );
-      controlControllable.addEffect(
-        new Effect.Control(location, mySwordsman.team),
-        {
-          type: "vanilla.control",
-          actor: {
-            id: "vanilla.god",
-            stackNumber: 0,
-          },
-          target: location,
-        },
-      );
-      myGame.resolveAction(controlControllable);
-      expect(
-        myGame.board
-          .getHex(location)
-          .is(HexFlag.ControlledBy, mySwordsman.team),
-      ).toEqual(true);
+      throw new Error("Test not implemented.");
     });
 
     test("control uncontrollable space", () => {
-      let location = new Coordinate(4, 4);
-      let controlUncontrollable: IAction = new Action(
-        mySwordsman,
-        "vanilla.control",
-      );
-      controlUncontrollable.addEffect(
-        new Effect.Control(location, mySwordsman.team),
-        {
-          type: "vanilla.control",
-          actor: {
-            id: "vanilla.god",
-            stackNumber: 0,
-          },
-          target: location,
-        },
-      );
-      expect(() => myGame.resolveAction(controlUncontrollable)).toThrow(
-        /cannot be controlled/,
-      );
+      throw new Error("Test not implemented.");
     });
   });
 
   describe("Move Effect", () => {
-    let location1 = new Coordinate(5, 0);
-    let hex1 = myGame.board.getHex(location1);
-    let location2 = location1.add(new Coordinate(0, 1));
-    let hex2 = myGame.board.getHex(location2);
-    test("move lone piece", () => {
-      expect(hex1.coinStack.size).toEqual(0);
-      expect(hex2.coinStack.size).toEqual(0);
-      addSwordsman(1, location1);
-      expect(hex1.coinStack.size).toEqual(1);
-      let moveLone: IAction = new Action(mySwordsman, "vanilla.move");
-      moveLone.addEffect(new Effect.Move(location1, location2), {
-        type: "vanilla.move",
-        actor: {
-          id: "vanilla.swordsman",
-          stackNumber: 0,
-        },
-        target: location2,
-      });
-      myGame.resolveAction(moveLone);
-      expect(hex1.coinStack.size).toEqual(0);
-      expect(hex2.coinStack.size).toEqual(1);
-    });
-
     test("move stacked pieces", () => {
-      expect(hex1.coinStack.size).toEqual(0);
-      expect(hex2.coinStack.size).toEqual(1);
-      addPikeman(1, location1);
-      addSwordsman(1, location1);
-      expect(hex1.coinStack.size).toEqual(2);
-      let moveStacked: IAction = new Action(mySwordsman, "vanilla.move");
-      moveStacked.addEffect(new Effect.Move(location1, location2), {
-        type: "vanilla.move",
-        actor: {
-          id: "vanilla.swordsman",
-          stackNumber: 0,
-        },
-        target: location2,
-      });
-      console.log(hex1.coinStack);
-      console.log(hex2.coinStack);
-      myGame.resolveAction(moveStacked);
-      console.log(hex1.coinStack);
-      console.log(hex2.coinStack);
-      expect(hex1.coinStack.size).toEqual(0);
-      expect(hex2.coinStack.size).toEqual(3);
+      throw new Error("Test not implemented.");
     });
 
     test("move lower stack", () => {
-      expect(hex1.coinStack.size).toEqual(0);
-      expect(hex2.coinStack.size).toEqual(3);
-      let moveLower: IAction = new Action(myPikeman, "vanilla.move");
-      moveLower.addEffect(new Effect.Move(location2, location1, 1, 1), {
-        type: "vanilla.move",
-        actor: {
-          id: "vanilla.pikeman",
-          stackNumber: 0,
-        },
-        target: location1,
-      });
-      myGame.resolveAction(moveLower);
-      expect(hex1.coinStack.size).toEqual(1);
-      expect(hex2.coinStack.size).toEqual(2);
+      throw new Error("Test not implemented.");
     });
 
     test("split stack", () => {
-      expect(hex2.coinStack.size).toEqual(2);
-      let moveLower: IAction = new Action(mySwordsman, "vanilla.move");
-      moveLower.addEffect(new Effect.Move(location2, location1, 1), {
-        type: "vanilla.move",
-        actor: {
-          id: "vanilla.pikeman",
-          stackNumber: 0,
-        },
-        target: location1,
-      });
-      myGame.resolveAction(moveLower);
-      expect(hex1.coinStack.size).toEqual(1);
-      expect(hex2.coinStack.size).toEqual(2);
+      throw new Error("Test not implemented.");
     });
   });
 });

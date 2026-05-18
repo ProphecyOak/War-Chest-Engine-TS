@@ -1,6 +1,5 @@
 import { IBoard } from "../board/board";
 import { ICoordinate } from "../board/coordinate";
-import { HexFlag } from "../board/hex";
 import { ISubscription } from "../game/eventBus";
 import { Action, IAction } from "../game/action";
 import { IPlayer } from "../game/player";
