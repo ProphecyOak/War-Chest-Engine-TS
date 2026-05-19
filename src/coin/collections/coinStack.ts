@@ -1,4 +1,4 @@
-import { PlayableID } from "../../unit/unit";
+import { PlayableID, Unit } from "../../unit/unit";
 import { Coin, ICoin } from "../coin";
 import {
   CoinCollection,
@@ -18,9 +18,9 @@ export default class CoinStack extends CoinCollection implements ICoinStack {
     return this._unit;
   }
 
-  constructor(unit: PlayableID) {
+  constructor(unit: Unit) {
     super();
-    this._unit = unit;
+    this._unit = unit.id;
   }
 
   getCoin(idx: number = 0): ICoin {

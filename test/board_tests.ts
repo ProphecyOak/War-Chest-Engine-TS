@@ -58,20 +58,18 @@ describe("Effects", () => {
   describe("Deploy Effect", () => {
     test("deploy piece", () => {
       let destination = new Coordinate(4, 4);
-      expect(myGame.board.getHex(destination).inhabitant).toEqual(undefined);
+      let target = myGame.board.getHex(destination);
+      expect(target.inhabitant).toEqual(undefined);
 
-      let deployPikeman = new Action(pikeman, "vanilla.deploy").addEffect(
-        new Effect.Deploy(pikeman as Unit, destination),
-        {
-          type: "vanilla.deploy",
-          actor: { id: pikeman.id, stackNumber: 0 },
-          target: destination,
-        },
+      myGame.resolveAction(
+        new Action(pikeman, "vanilla.deploy").addEffect(
+          new Effect.Deploy(pikeman as Unit, destination),
+        ),
       );
-      myGame.resolveAction(deployPikeman);
-      expect(myGame.board.getHex(destination).inhabitant?.unit).toEqual(
-        pikeman,
-      );
+      expect(target.inhabitant?.unit).toEqual(pikeman);
+      expect(
+        target.inhabitant?.unit.stacks.at(target.inhabitant.idx!)?.size,
+      ).toEqual(1);
     });
 
     test("deploy piece to occupied", () => {
@@ -80,53 +78,73 @@ describe("Effects", () => {
         pikeman,
       );
 
-      let deployPikeman = new Action(pikeman, "vanilla.deploy").addEffect(
-        new Effect.Deploy(pikeman as Unit, destination),
-        {
-          type: "vanilla.deploy",
-          actor: { id: pikeman.id, stackNumber: 0 },
-          target: destination,
-        },
+      expect(() =>
+        myGame.resolveAction(
+          new Action(pikeman, "vanilla.deploy").addEffect(
+            new Effect.Deploy(pikeman as Unit, destination),
+          ),
+        ),
+      ).toThrow(/occupied/);
+    });
+
+    test("deploy second stack", () => {
+      let destination = new Coordinate(4, 5);
+      expect(myGame.board.getHex(destination).inhabitant).toEqual(undefined);
+
+      myGame.resolveAction(
+        new Action(pikeman, "vanilla.deploy").addEffect(
+          new Effect.Deploy(pikeman as Unit, destination),
+        ),
       );
-      expect(() => myGame.resolveAction(deployPikeman)).toThrow(/occupied/);
+      expect(myGame.board.getHex(destination).inhabitant?.unit).toEqual(
+        pikeman,
+      );
     });
   });
 
-  //   describe("Damage Effect", () => {
-  //     test("damage lone piece", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
+  describe("Bolster Effect", () => {
+    test("bolster piece", () => {
+      let target = myGame.board.getHex(new Coordinate(4, 4));
+      expect(target.inhabitant?.unit).toEqual(pikeman);
+      expect(
+        target.inhabitant?.unit.stacks.at(target.inhabitant.idx!)?.size,
+      ).toEqual(1);
+      myGame.resolveAction(
+        new Action(pikeman, "vanilla.bolster").addEffect(
+          new Effect.Bolster(pikeman as Unit, 0),
+        ),
+      );
+      expect(
+        target.inhabitant?.unit.stacks.at(target.inhabitant.idx!)?.size,
+      ).toEqual(2);
+    });
 
-  //     test("damage bolstered piece", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
+    test("bolster non-existent piece", () => {
+      expect(() =>
+        myGame.resolveAction(
+          new Action(pikeman, "vanilla.bolster").addEffect(
+            new Effect.Bolster(pikeman as Unit, 20),
+          ),
+        ),
+      ).toThrow(/out of range/);
+    });
+  });
 
-  //     test("damage bottom stack", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
-  //   });
+  describe("Control Effect", () => {
+    test("", () => {
+      throw new Error("Test Section Not Implemented.");
+    });
+  });
 
-  //   describe("Control Effect", () => {
-  //     test("control controllable space", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
+  describe("Move Effect", () => {
+    test("", () => {
+      throw new Error("Test Section Not Implemented.");
+    });
+  });
 
-  //     test("control uncontrollable space", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
-  //   });
-
-  //   describe("Move Effect", () => {
-  //     test("move stacked pieces", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
-
-  //     test("move lower stack", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
-
-  //     test("split stack", () => {
-  //       throw new Error("Test not implemented.");
-  //     });
-  //   });
+  describe("Damage Effect", () => {
+    test("", () => {
+      throw new Error("Test Section Not Implemented.");
+    });
+  });
 });

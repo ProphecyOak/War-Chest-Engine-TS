@@ -2,11 +2,10 @@ import { IBoard } from "../board/board";
 import { IPlayer, Player } from "./player";
 import * as boardLayouts from "../board/Layouts";
 import * as CoinCollections from "../coin/collections";
-import { IAction } from "./action";
 import { IGameEffect } from "./gameEffect";
-import { UnitEvent, UnitEventBus } from "../unit/unitEvents";
-import { IPlayable, PlayableID } from "../unit/unit";
+import { PlayableID } from "../unit/unit";
 import { IMemoizedPlayable } from "../unit/memoizablePlayable";
+import { IAction } from "./action";
 
 export interface IGame {
   get board(): IBoard;
@@ -43,11 +42,8 @@ export class Game implements IGame {
   }
 
   resolveAction(action: IAction): void {
-    action.effects.forEach(
-      (value: { effect: IGameEffect; event?: UnitEvent }) => {
-        value.effect.execute(this);
-        if (value.event) UnitEventBus.instance.fire(value.event);
-      },
-    );
+    action.effects.forEach((effect: IGameEffect) => {
+      let effectResults = effect.execute(this);
+    });
   }
 }

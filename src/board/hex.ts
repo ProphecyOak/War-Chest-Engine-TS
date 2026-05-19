@@ -1,4 +1,3 @@
-import * as CoinCollections from "../coin/collections";
 import { Unit } from "../unit/unit";
 
 export enum HexFlag {
@@ -14,7 +13,7 @@ type TInhabitant = { unit: Unit; idx?: number };
 
 export interface IHex {
   get inhabitant(): TInhabitant | undefined;
-  deploy(unit: Unit, idx?: number): void;
+  place(unit: Unit, idx?: number): void;
   clear(): void;
   is(flagName: HexFlag, comparison?: number): boolean;
   set(flagName: HexFlag, value: number): void;
@@ -26,9 +25,9 @@ export class Hex implements IHex {
     return this._inhabitant;
   }
 
-  deploy(unit: Unit, idx: number = 0): void {
+  place(unit: Unit, idx: number = 0): void {
     if (this._inhabitant != undefined)
-      throw new Error("Cannot deploy to occupied hex.");
+      throw new Error("Cannot place to occupied hex.");
     this._inhabitant = { unit, idx };
   }
 

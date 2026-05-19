@@ -3,6 +3,7 @@ import { ICoordinate } from "../board/coordinate";
 import { ISubscription } from "../game/eventBus";
 import { Action, IAction } from "../game/action";
 import { IPlayer } from "../game/player";
+import * as CoinCollections from "../coin/collections";
 
 export type UnitID = `${string}.${string}`;
 export type PlayableID = UnitID | "vanilla.royal_coin";
@@ -32,6 +33,7 @@ abstract class Playable implements IPlayable {
 
 export abstract class Unit extends Playable {
   boardLocations: ICoordinate[] = [];
+  stacks: CoinCollections.Stack[] = [];
 
   unitActionsAvailable(board: IBoard): IAction[] {
     return ([] as IAction[])
@@ -66,3 +68,5 @@ class RoyalCoin extends Playable {
     return actions;
   }
 }
+
+export const outOfBoundsStackError = new Error("Stack idx out of range");
