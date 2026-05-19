@@ -13,7 +13,7 @@ export class UnitEventBus extends EventBus<UnitEvent> {
 
 type UnitIdentifier = { id: UnitID; stackNumber: number };
 
-export type UnitEvent = AttackEvent | ControlEvent | MoveEvent;
+export type UnitEvent = AttackEvent | ControlEvent | MoveEvent | DeployEvent;
 
 interface BaseEvent {
   type: string;
@@ -33,6 +33,12 @@ interface ControlEvent extends BaseEvent {
 
 interface MoveEvent extends BaseEvent {
   type: "vanilla.move";
+  actor: UnitIdentifier;
+  target: ICoordinate;
+}
+
+interface DeployEvent extends BaseEvent {
+  type: "vanilla.deploy";
   actor: UnitIdentifier;
   target: ICoordinate;
 }

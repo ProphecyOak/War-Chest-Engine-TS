@@ -14,18 +14,26 @@ type TInhabitant = { unit: Unit; idx?: number };
 
 export interface IHex {
   get inhabitant(): TInhabitant | undefined;
+  deploy(unit: Unit, idx?: number): void;
+  clear(): void;
   is(flagName: HexFlag, comparison?: number): boolean;
   set(flagName: HexFlag, value: number): void;
 }
 
 export class Hex implements IHex {
-  private _inhabitant?: TInhabitant;
+  private _inhabitant: TInhabitant | undefined;
   get inhabitant(): TInhabitant | undefined {
     return this._inhabitant;
   }
 
-  set inhabitant(new_inhabitant: TInhabitant) {
-    this._inhabitant = new_inhabitant;
+  deploy(unit: Unit, idx: number = 0): void {
+    if (this._inhabitant != undefined)
+      throw new Error("Cannot deploy to occupied hex.");
+    this._inhabitant = { unit, idx };
+  }
+
+  clear(): void {
+    this._inhabitant = undefined;
   }
 
   private _flags: Partial<Record<HexFlag, number>> = {

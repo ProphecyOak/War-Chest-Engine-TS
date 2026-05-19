@@ -3,11 +3,11 @@ import * as boardLayouts from "../src/board/Layouts";
 import * as Units from "../src/unit/Units";
 import { Board } from "../src/board/board";
 import { HexFlag } from "../src/board/hex";
-import { Coordinate, ICoordinate } from "../src/board/coordinate";
+import { Coordinate } from "../src/board/coordinate";
 import { Game } from "../src/game/game";
-import { Coin } from "../src/coin/coin";
 import { Action, IAction } from "../src/game/action";
 import { Effect } from "../src/game/gameEffect";
+import { Unit } from "../src/unit/unit";
 
 describe("Board", () => {
   let myBoard: Board;
@@ -52,44 +52,81 @@ describe("Board", () => {
 
 describe("Effects", () => {
   let myGame = Game.instance;
+  myGame.addPlayable("vanilla.pikeman", Units.Vanilla.Pikeman);
+  let pikeman = myGame.playable("vanilla.pikeman").of(myGame.players[0]);
 
-  describe("Deploy Effect", () => {});
+  describe("Deploy Effect", () => {
+    test("deploy piece", () => {
+      let destination = new Coordinate(4, 4);
+      expect(myGame.board.getHex(destination).inhabitant).toEqual(undefined);
 
-  describe("Damage Effect", () => {
-    test("damage lone piece", () => {
-      throw new Error("Test not implemented.");
+      let deployPikeman = new Action(pikeman, "vanilla.deploy").addEffect(
+        new Effect.Deploy(pikeman as Unit, destination),
+        {
+          type: "vanilla.deploy",
+          actor: { id: pikeman.id, stackNumber: 0 },
+          target: destination,
+        },
+      );
+      myGame.resolveAction(deployPikeman);
+      expect(myGame.board.getHex(destination).inhabitant?.unit).toEqual(
+        pikeman,
+      );
     });
 
-    test("damage bolstered piece", () => {
-      throw new Error("Test not implemented.");
-    });
+    test("deploy piece to occupied", () => {
+      let destination = new Coordinate(4, 4);
+      expect(myGame.board.getHex(destination).inhabitant?.unit).toEqual(
+        pikeman,
+      );
 
-    test("damage bottom stack", () => {
-      throw new Error("Test not implemented.");
+      let deployPikeman = new Action(pikeman, "vanilla.deploy").addEffect(
+        new Effect.Deploy(pikeman as Unit, destination),
+        {
+          type: "vanilla.deploy",
+          actor: { id: pikeman.id, stackNumber: 0 },
+          target: destination,
+        },
+      );
+      expect(() => myGame.resolveAction(deployPikeman)).toThrow(/occupied/);
     });
   });
 
-  describe("Control Effect", () => {
-    test("control controllable space", () => {
-      throw new Error("Test not implemented.");
-    });
+  //   describe("Damage Effect", () => {
+  //     test("damage lone piece", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
 
-    test("control uncontrollable space", () => {
-      throw new Error("Test not implemented.");
-    });
-  });
+  //     test("damage bolstered piece", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
 
-  describe("Move Effect", () => {
-    test("move stacked pieces", () => {
-      throw new Error("Test not implemented.");
-    });
+  //     test("damage bottom stack", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
+  //   });
 
-    test("move lower stack", () => {
-      throw new Error("Test not implemented.");
-    });
+  //   describe("Control Effect", () => {
+  //     test("control controllable space", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
 
-    test("split stack", () => {
-      throw new Error("Test not implemented.");
-    });
-  });
+  //     test("control uncontrollable space", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
+  //   });
+
+  //   describe("Move Effect", () => {
+  //     test("move stacked pieces", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
+
+  //     test("move lower stack", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
+
+  //     test("split stack", () => {
+  //       throw new Error("Test not implemented.");
+  //     });
+  //   });
 });

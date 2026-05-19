@@ -2,11 +2,13 @@ import { IPlayable, UnitID } from "../unit/unit";
 import { UnitEvent } from "../unit/unitEvents";
 import { IGameEffect } from "./gameEffect";
 
+type DeployAction = "deploy" | "bolster";
 type FaceDownAction = "pass" | "initiative" | "recruit";
 type FaceUpAction = "move" | "attack" | "tactic" | "control";
 type OtherAction = "thorns";
 
-type ActionName = `${string}.${FaceDownAction | FaceUpAction | OtherAction}`;
+type ActionName =
+  `${string}.${DeployAction | FaceDownAction | FaceUpAction | OtherAction}`;
 
 export interface IAction {
   name: ActionName;
