@@ -54,6 +54,7 @@ describe("Effects", () => {
   let myGame = Game.instance;
   myGame.addPlayable("vanilla.pikeman", Units.Vanilla.Pikeman);
   let pikeman = myGame.playable("vanilla.pikeman").of(myGame.players[0]);
+  let pikeman1 = myGame.playable("vanilla.pikeman").of(myGame.players[1]);
 
   describe("Deploy Effect", () => {
     test("deploy piece", () => {
@@ -111,7 +112,7 @@ describe("Effects", () => {
       ).toEqual(1);
       myGame.resolveAction(
         new Action(pikeman, "vanilla.bolster").addEffect(
-          new Effect.Bolster(pikeman as Unit, 0),
+          new Effect.Bolster({ unit: pikeman as Unit, stackIdx: 0 }),
         ),
       );
       expect(
@@ -123,7 +124,7 @@ describe("Effects", () => {
       expect(() =>
         myGame.resolveAction(
           new Action(pikeman, "vanilla.bolster").addEffect(
-            new Effect.Bolster(pikeman as Unit, 20),
+            new Effect.Bolster({ unit: pikeman as Unit, stackIdx: 20 }),
           ),
         ),
       ).toThrow(/out of range/);
@@ -131,38 +132,47 @@ describe("Effects", () => {
   });
 
   describe("Control Effect", () => {
-    test("Control Enemy Spot", () => {
-      let target = myGame.board.getHex(new Coordinate(5, 0));
+    test("control enemy hex", () => {
+      let location = new Coordinate(5, 0);
+      let target = myGame.board.getHex(location);
       expect(target.is(HexFlag.Controllable)).toEqual(true);
       expect(target.is(HexFlag.ControlledBy, 0)).toEqual(true);
       myGame.resolveAction(
         new Action(pikeman, "vanilla.control").addEffect(
-          new Effect.Control(target, myGame.players.at(1)!),
+          new Effect.Control(location, { unit: pikeman1 as Unit, stackIdx: 0 }),
         ),
       );
       expect(target.is(HexFlag.ControlledBy, 1)).toEqual(true);
     });
 
-    test("Control Uncontrollable Spot", () => {
-      let target = myGame.board.getHex(new Coordinate(5, 1));
+    test("control uncontrollable hex", () => {
+      let location = new Coordinate(5, 1);
+      let target = myGame.board.getHex(location);
       expect(target.is(HexFlag.Controllable)).toEqual(false);
       expect(() =>
         myGame.resolveAction(
           new Action(pikeman, "vanilla.control").addEffect(
-            new Effect.Control(target, myGame.players.at(1)!),
+            new Effect.Control(location, {
+              unit: pikeman as Unit,
+              stackIdx: 0,
+            }),
           ),
         ),
       ).toThrow(/uncontrollable/);
     });
 
-    test("Control Friendly Spot", () => {
-      let target = myGame.board.getHex(new Coordinate(6, 1));
+    test("control friendly hex", () => {
+      let location = new Coordinate(6, 1);
+      let target = myGame.board.getHex(location);
       expect(target.is(HexFlag.Controllable)).toEqual(true);
       expect(target.is(HexFlag.ControlledBy, 0)).toEqual(true);
       expect(() =>
         myGame.resolveAction(
           new Action(pikeman, "vanilla.control").addEffect(
-            new Effect.Control(target, myGame.players.at(0)!),
+            new Effect.Control(location, {
+              unit: pikeman as Unit,
+              stackIdx: 0,
+            }),
           ),
         ),
       ).toThrow(/friendly/);

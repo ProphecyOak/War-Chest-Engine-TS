@@ -11,9 +11,14 @@ export class UnitEventBus extends EventBus<UnitEvent> {
   }
 }
 
-type UnitIdentifier = { unit: Unit; stackNumber: number };
+export type UnitIdentifier = { unit: Unit; stackIdx: number };
 
-export type UnitEvent = AttackEvent | ControlEvent | MoveEvent | DeployEvent;
+export type UnitEvent =
+  | AttackEvent
+  | ControlEvent
+  | MoveEvent
+  | DeployEvent
+  | BolsterEvent;
 
 interface BaseEvent {
   type: string;
@@ -22,7 +27,7 @@ interface BaseEvent {
 interface AttackEvent extends BaseEvent {
   type: "vanilla.attack";
   actor: UnitIdentifier;
-  target: UnitIdentifier;
+  target: ICoordinate;
 }
 
 interface ControlEvent extends BaseEvent {
@@ -41,4 +46,9 @@ interface DeployEvent extends BaseEvent {
   type: "vanilla.deploy";
   actor: UnitIdentifier;
   target: ICoordinate;
+}
+
+interface BolsterEvent extends BaseEvent {
+  type: "vanilla.bolster";
+  actor: UnitIdentifier;
 }
