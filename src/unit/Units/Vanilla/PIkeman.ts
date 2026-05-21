@@ -16,10 +16,7 @@ class Pikeman extends Unit {
     let unitEvents = UnitEventBus.instance;
     this.subscriptions.push(
       unitEvents.subscribe((event: UnitEvent) => {
-        if (
-          event.type == "vanilla.attack" &&
-          event.target.id == "vanilla.pikeman"
-        )
+        if (event.type == "vanilla.attack" && event.target.unit == this)
           this.onAttacked(event);
       }),
     );

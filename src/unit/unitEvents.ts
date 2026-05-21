@@ -1,6 +1,6 @@
 import { ICoordinate } from "../board/coordinate";
 import { EventBus } from "../game/eventBus";
-import { UnitID } from "./unit";
+import { Unit } from "./unit";
 
 export class UnitEventBus extends EventBus<UnitEvent> {
   private static _instance: UnitEventBus;
@@ -11,7 +11,7 @@ export class UnitEventBus extends EventBus<UnitEvent> {
   }
 }
 
-type UnitIdentifier = { id: UnitID; stackNumber: number };
+type UnitIdentifier = { unit: Unit; stackNumber: number };
 
 export type UnitEvent = AttackEvent | ControlEvent | MoveEvent | DeployEvent;
 

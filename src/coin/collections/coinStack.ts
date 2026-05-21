@@ -13,14 +13,14 @@ export default class CoinStack extends CoinCollection implements ICoinStack {
     return this._size;
   }
 
-  private _unit: PlayableID;
+  private _id: PlayableID;
   get id(): PlayableID {
-    return this._unit;
+    return this._id;
   }
 
-  constructor(unit: Unit) {
+  constructor(id: PlayableID) {
     super();
-    this._unit = unit.id;
+    this._id = id;
   }
 
   getCoin(idx: number = 0): ICoin {

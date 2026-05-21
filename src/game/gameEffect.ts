@@ -4,6 +4,8 @@ import * as CoinCollections from "../coin/collections";
 import { outOfBoundsStackError, Unit } from "../unit/unit";
 import { UnitEventBus } from "../unit/unitEvents";
 import { Coin } from "../coin/coin";
+import { IPlayer } from "./player";
+import { HexFlag, IHex } from "../board/hex";
 
 export interface IGameEffect {
   execute(game: IGame): void;
@@ -34,11 +36,11 @@ export namespace Effect {
       let newStackIdx = this.unit.boardLocations.length;
       deployLocation.place(this.unit, newStackIdx);
       this.unit.boardLocations.push(this.location);
-      this.unit.stacks.push(new CoinCollections.Stack(this.unit));
+      this.unit.stacks.push(new CoinCollections.Stack(this.unit.id));
       this.unit.stacks.at(newStackIdx)?.addCoin(new Coin(this.unit.id));
       UnitEventBus.instance.fire({
         type: "vanilla.deploy",
-        actor: { id: this.unit.id, stackNumber: newStackIdx },
+        actor: { unit: this.unit, stackNumber: newStackIdx },
         target: this.location,
       });
     }
@@ -60,13 +62,26 @@ export namespace Effect {
     }
   }
 
-  export class Move extends GameEffect {
+  export class Control extends GameEffect {
+    location: IHex;
+    player: IPlayer;
+
+    constructor(location: IHex, player: IPlayer) {
+      super();
+      this.location = location;
+      this.player = player;
+    }
+
     execute(game: IGame): void {
-      throw new Error("Method not implemented.");
+      if (!this.location.is(HexFlag.Controllable))
+        throw new Error("Cannot control uncontrollable hex.");
+      if (this.location.is(HexFlag.ControlledBy, this.player.team))
+        throw new Error("Cannot control friendly hex.");
+      this.location.set(HexFlag.ControlledBy, this.player.team);
     }
   }
 
-  export class Control extends GameEffect {
+  export class Move extends GameEffect {
     execute(game: IGame): void {
       throw new Error("Method not implemented.");
     }

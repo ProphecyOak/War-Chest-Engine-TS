@@ -131,8 +131,41 @@ describe("Effects", () => {
   });
 
   describe("Control Effect", () => {
-    test("", () => {
-      throw new Error("Test Section Not Implemented.");
+    test("Control Enemy Spot", () => {
+      let target = myGame.board.getHex(new Coordinate(5, 0));
+      expect(target.is(HexFlag.Controllable)).toEqual(true);
+      expect(target.is(HexFlag.ControlledBy, 0)).toEqual(true);
+      myGame.resolveAction(
+        new Action(pikeman, "vanilla.control").addEffect(
+          new Effect.Control(target, myGame.players.at(1)!),
+        ),
+      );
+      expect(target.is(HexFlag.ControlledBy, 1)).toEqual(true);
+    });
+
+    test("Control Uncontrollable Spot", () => {
+      let target = myGame.board.getHex(new Coordinate(5, 1));
+      expect(target.is(HexFlag.Controllable)).toEqual(false);
+      expect(() =>
+        myGame.resolveAction(
+          new Action(pikeman, "vanilla.control").addEffect(
+            new Effect.Control(target, myGame.players.at(1)!),
+          ),
+        ),
+      ).toThrow(/uncontrollable/);
+    });
+
+    test("Control Friendly Spot", () => {
+      let target = myGame.board.getHex(new Coordinate(6, 1));
+      expect(target.is(HexFlag.Controllable)).toEqual(true);
+      expect(target.is(HexFlag.ControlledBy, 0)).toEqual(true);
+      expect(() =>
+        myGame.resolveAction(
+          new Action(pikeman, "vanilla.control").addEffect(
+            new Effect.Control(target, myGame.players.at(0)!),
+          ),
+        ),
+      ).toThrow(/friendly/);
     });
   });
 

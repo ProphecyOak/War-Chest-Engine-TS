@@ -13,10 +13,7 @@ class Swordsman extends Unit {
     let unitEvents = UnitEventBus.instance;
     this.subscriptions.push(
       unitEvents.subscribe((event: UnitEvent) => {
-        if (
-          event.type == "vanilla.attack" &&
-          event.actor.id == "vanilla.swordsman"
-        )
+        if (event.type == "vanilla.attack" && event.actor.unit == this)
           this.onPerformsAttack(event);
       }),
     );
